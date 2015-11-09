@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta charset="utf-8" />
+        <meta name="format-detection" content="telephone=no" />
+        <meta name="msapplication-tap-highlight" content="no" />
+        <!-- WARNING: for iOS 7, remove the width=device-width and height=device-height attributes. See https://issues.apache.org/jira/browse/CB-4323 -->
+        <meta name="viewport" content="user-scalable=no, initial-scale=1, maximum-scale=1, minimum-scale=1, width=device-width, height=device-height, target-densitydpi=device-dpi" />
+        <link rel="stylesheet" href="css/foundation.css" /> 
+        <link rel="stylesheet" href="css/normalize.css" />
+        <link rel="stylesheet" href="css/site.css" />
+        <script src="js/vendor/modernizr.js"></script>
+
+        <title>Nuevo pedido</title>
+    </head>
+    <body>
+        <div class="row">
+            <div class="small-12 columns">
+                <h1>Nuevo Pedido</h1>
+                <form id="formNewOrder">
+                    <input name="numberOrder" id="numberOrder" type="number" placeholder="Numero de pedido">
+                    <button type="button" id="btnCreateOrder"class="expand success">Crear pedido</button>
+                </form>
+            </div>
+        </div>
+
+        
+        <script src="js/vendor/jquery.js"></script>
+        <script src="js/productionIndicators.js"></script>
+        <script src="js/foundation.min.js"></script>
+        <script type="text/javascript">
+            (function(){
+                $(document).on('ready',function(){
+                    if(window.localStorage.getItem("session") == "false"){//validar que este creada la session
+                        window.location.href = "index.html";
+                    }
+                    if(window.localStorage.getItem("state_order") == "true"){//validar que el pedido no este activo
+                        window.location.href = "order.html";
+                    }
+                    
+                });
+                $('#btnCreateOrder').on('click',function(){
+                    if($("#numberOrder").val()==""){
+                        alert("Escriba un numero de pedido.");
+                    }else{
+                        $.ajax({
+                            url:myserver.ip+"insert_new_order",
+                            type:"POST",
+                            data:{
+                                number_order:$('#numberOrder').val(),
+                                id_machine:window.localStorage.getItem("id_machine"),
+                                id_user:window.localStorage.getItem("id_user")
+                            },
+                            success: function(response){
+                                window.localStorage.setItem("id_order_child",response);
+                                window.localStorage.setItem("order",$('#numberOrder').val());
+                                window.localStorage.setItem("state_order","true");
+                                window.location.href="order.html";
+                            }
+                        });
+                    }
+                });
+            })();
+            
+
+        </script>
+    </body>
+</html>

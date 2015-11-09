@@ -1,0 +1,93 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta charset="utf-8" />
+        <meta name="format-detection" content="telephone=no" />
+        <meta name="msapplication-tap-highlight" content="no" />
+        <!-- WARNING: for iOS 7, remove the width=device-width and height=device-height attributes. See https://issues.apache.org/jira/browse/CB-4323 -->
+        <meta name="viewport" content="user-scalable=no, initial-scale=1, maximum-scale=1, minimum-scale=1, width=device-width, height=device-height, target-densitydpi=device-dpi" />
+        <link rel="stylesheet" href="css/foundation.css" /> 
+        <link rel="stylesheet" href="css/normalize.css" />
+        <link rel="stylesheet" href="css/site.css" />
+        <script src="js/vendor/modernizr.js"></script>
+
+        <title>Configuracion</title>
+    </head>
+    <body>
+        <div class="row">
+            <div class="small-12 columns">
+                <h1>Configuracion</h1>
+                <input id="server" placeholder="servidor">
+                <input type="number" id="port" placeholder="puerto">
+                
+                <label>Proceso principal de la maquina</label>
+                <select id="process">
+                    
+                </select>
+
+                <label>Maquina</label>
+                <h4 id="labelMachine"></h4>
+                <select id="machine">
+
+                </select>
+                <button id="btnCreateConfig" class="margin-top">Guardar Configuracion</button>
+                <button id="btnViewConfig" class="margin-top">Ver Configuracion</button>
+                <dl class="sub-nav">
+                  <dd><a href="index.html">Inicio</a></dd>
+                  <dd><a id="btnRemoveConfig" href="#">Borrar toda la configuracion</a></dd>
+                </dl>
+            </div>
+        </div>
+        <script src="js/vendor/jquery.js"></script>
+        <script type="text/javascript">
+            $(document).on('ready',function(){
+                getDataLogin();//consulta informacion maquinas y procesos
+                if(window.localStorage.getItem("state_config")=="true"){//si existe una configuracion
+                    $('#server').val(window.localStorage.getItem("server"));//load serve
+                    $('#port').val(window.localStorage.getItem("port"));//load port
+                    $('#labelMachine').text("ID Maquina "+window.localStorage.getItem("id_machine"));
+                  }
+            });
+            $('#btnRemoveConfig').on('click',function(){
+                window.localStorage.clear();
+                $('#server').val("");
+                $('#port').val("");
+            });
+            $('#btnCreateConfig').on('click',function(){
+                window.localStorage.setItem("state_config","true");
+                window.localStorage.setItem("server",$('#server').val());
+                window.localStorage.setItem("port",$('#port').val());
+                window.localStorage.setItem("id_machine",$('#machine').val());
+                window.localStorage.setItem("name_machine",$("#machine option:selected").text());
+                window.localStorage.setItem("id_process",$('#process').val());
+                alert("configuracion creada correctamente!");
+                window.location.href = "index.html";
+            });
+            $('#btnViewConfig').on('click',function(){
+                alert("server: "+window.localStorage.getItem("server")+" port: "+window.localStorage.getItem("port")+" maquina: "+window.localStorage.getItem("id_machine")+" proceso: "+window.localStorage.getItem("id_process"));
+            });            
+            function getDataLogin(){
+                $.ajax({
+                    url:"http://192.168.1.91:80/indicadores-produccion/apis/get_all_machines",
+                    type:"POST",
+                    success:function(response){
+                        var machines = jQuery.parseJSON(response);
+                        for (var i=0; i < machines.length; i++) {
+                            $('#machine').append('<option value="'+machines[i]['id']+'">'+machines[i]['nombre']+'</option>');
+                        };
+                    }
+                });
+                $.ajax({
+                    url:"http://192.168.1.91:80/indicadores-produccion/apis/get_all_process",
+                    type:"POST",
+                    success:function(response){
+                        var machines = jQuery.parseJSON(response);
+                        for (var i=0; i < machines.length; i++) {
+                            $('#process').append('<option value="'+machines[i]['id']+'">'+machines[i]['nombre']+'</option>');
+                        };
+                    }
+                });                
+            }
+        </script>
+    </body>
+</html>

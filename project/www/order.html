@@ -1,0 +1,349 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta charset="utf-8" />
+        <meta name="format-detection" content="telephone=no" />
+        <meta name="msapplication-tap-highlight" content="no" />
+        <!-- WARNING: for iOS 7, remove the width=device-width and height=device-height attributes. See https://issues.apache.org/jira/browse/CB-4323 -->
+        <meta name="viewport" content="user-scalable=no, initial-scale=1, maximum-scale=1, minimum-scale=1, width=device-width, height=device-height, target-densitydpi=device-dpi" />
+
+        <link rel="stylesheet" href="css/foundation.css" /> 
+        <link rel="stylesheet" href="css/normalize.css" />
+        <script src="js/vendor/modernizr.js"></script>
+
+        <!--<link rel="stylesheet" type="text/css" href="css/flexboxgrid.min.css">-->
+        <link rel="stylesheet" type="text/css" href="css/TimeCircles.css">
+        <link rel="stylesheet" type="text/css" href="css/order.css">
+        <link rel="stylesheet" type="text/css" href="css/font-awesome.min.css">
+        <link rel="stylesheet" href="css/animate.css">
+
+        <!--<script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.3/jquery.min.js"></script>-->
+        <script src="js/vendor/jquery.js"></script>
+        <script src="js/TimeCircles.js"></script>
+        <script src="js/productionIndicators.js"></script>
+        <script src="js/order.js"></script>
+        
+        
+        <title>Indicadores de Produccion</title>
+    </head>
+    <body>
+        <div class="off-canvas-wrap" data-offcanvas>
+          <div class="inner-wrap">
+            <!--NAVIGATION>-->
+            <aside class="left-off-canvas-menu">
+                <!-- whatever you want goes here -->
+                <div class="myNav">
+                    <div class="nav-head">
+                        <img src="images/suprapak.png">
+                        <label><i class="fa fa-tachometer"></i> Panel de control</label>
+                    </div>
+                    
+                    <ul>
+                      <li class=""><a href="#"> <i class="fa fa-home"></i> Inicio</a></li>
+
+                      <li class="item"><a href="#" class="active" ><i class="fa fa-bolt"></i> Operaciones</a>
+                        <ul class="dropdown active">
+                          <li><a href="#" id="btnInsertMaterial"><i class="fa fa-map-o"></i> material utilizado</a></li>
+                          <li><a href="#" id="btnInsertNewRoll" data-reveal-id="modalInsertRoll"><i class="fa fa-life-ring"></i> terminar rollo</a></li>
+                          <li><a href="#" id="btnInsertError" data-reveal-id="modalInsertError"><i class="fa fa-wrench"></i> falla mecanica</a></li>
+                        </ul>
+                      </li>
+                      <li class="item"><a  class="" href="#"><i class="fa fa-list-alt"></i> Formatos</a>
+                        <ul class="dropdown">
+                            <li><a href="#" id="btnInsertFormat" data-reveal-id="modalInsertFormat"><i class="fa fa-refresh"></i> Arranque de Proceso</a></li>
+                        </ul>
+                      </li>                              
+                      <li class="item"><a  class="" href="#"><i class="fa fa-cogs"></i> Configuracion</a>
+                        <ul class="dropdown">
+                          <li><a href="#" id="btnRefreshPage"><i class="fa fa-refresh"></i> recargar App</a></li>
+                            <li><a href="#" id="btnViewState" ><i class="fa fa-code"></i> ver estado</a></li>
+                            <li><a href="#" id="btnViewIdTimeBlock" ><i class="fa fa-code"></i> ver id parada</a></li>
+                            <li><a href="#" id="btnTempModal" data-reveal-id="modalTypeTimeBlock"><i class="fa fa-code"></i> modal</a></li>
+                            <li><a href="#" id="btnViewIdOrderChild" ><i class="fa fa-code"></i> ver id order</a></li>
+                        </ul>
+                      </li>
+                    </ul>
+                </div>
+            </aside>
+            <!--<a class="left-off-canvas-toggle" href="#" >Menu</a>-->
+
+            <!-- Off Canvas Menu -->
+            <div class="container-fluid" style="height:100vh">
+                <div class="row">
+                    <div class="small-12 columns">
+                        <div class="row">
+                            <div class="small-1 columns">
+                                <div style="position:relative"><button class="left-off-canvas-toggle btn-control-dashboard"><i class="fa fa-list"></i></button></div>
+                                
+                            </div>
+                            <div class="small-11 columns">
+                                <div id="boxAlert" class="box box-alert">
+                                    <h2 id="textMessage" class="animated fadeInDown" style="display:none"></h2>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="small-8 columns">
+                                <div class="box spaceControl">
+                                    <h1 id="labelNameMachine"></h1>
+                                    <!--btnControl success alert-->
+                                    <button id="runTimeBlock" class="margin-height success"><i class="fa fa-check active"></i></button>
+                                    <button id="endTimeBlock" class="margin-height alert"><i class="fa fa-ban"></i></button>
+                                </div>
+                                <div class="box margin-top">
+                                    <h1 id="nameTimeBlock" style="text-transform:capitalize"></h1>
+                                    <div id="spaceDateCount"></div>
+                                </div>
+                            </div>
+                            <div class="small-4 columns">
+                                <div class="box">
+                                    <h1>Informacion del pedido</h1>
+                                    <div id="boxDataOrder"></div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="small-6 columns">
+                                <div class="box">
+                                    <div>
+                                        <button id="countRoll" class="margin-height" data-reveal-id="modalInfoRoll"><i class="fa fa-life-ring"></i></button>
+                                        <button data-reveal-id="modalWaste" class="margin-height">Terminar</button>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="small-6 columns">
+                                <div class="box"><h1>Informacion operario</h1>
+                                    <div id="boxDataUser"></div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- main content goes here -->
+            
+          <!-- close the off-canvas menu -->
+          <a class="exit-off-canvas"></a>
+
+          </div>
+        </div>
+    
+        
+
+        <!--MODALES >>>>-->
+        <div class="reveal-modal xlarge" data-reveal aria-labelledby="modalTitle" aria-hidden="true" role="dialog" id="modalTypeTimeBlock">
+            <div class="dialog">
+                <div class="dialog-head">
+                    <h1>Que tipo de parada?</h1>
+                </div>
+                <div id="modalBodyTypeTimeBlock"class="dialog-body center">
+                    <div id="categoriesTimeBlock" >
+                        <button id="btnBack"> <i class="fa fa-chevron-left"></i> </button>
+                        <div id="spaceCategoriesTimeBlock"class="row">
+                            <div class="small-6 columns">
+                                <div class="card-time-block">
+                                    <div class="card-head">
+                                        <div class="success">
+                                            <h1>Parada planificada</h1>
+                                        </div>
+                                    </div>
+                                    <div class="card-body">
+                                        <p>son bloques de tiempo que se utlizan para hacer actividades del mismo proceso</p>
+                                        <button class="btn btn-category-timeblock" value="1">Insertar</button>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="small-6 columns">
+                                <div class="card-time-block">
+                                    <div class="card-head">
+                                        <div class="alert">
+                                            <h1>Parada no planificada</h1>
+                                        </div>
+                                    </div>
+                                    <div class="card-body">
+                                        <p>son bloques de tiempo los cuales no estaban previstos en la marcha</p>
+                                        <button class="btn btn-category-timeblock" value="2">Insertar</button>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <a class="close-reveal-modal xlarge" aria-label="Close">&#215;</a>
+            </div>
+        </div>
+        <div class="reveal-modal xlarge" data-reveal aria-labelledby="modalTitle" aria-hidden="true" role="dialog" id="modalInsertRoll">
+            <div class="dialog center">
+                <div class="dialog-head">
+                    <h1>Informacion del rollo terminado</h1>
+                </div>
+                <div class="dialog-body">
+                    <div class="row">
+                        <div class="small-12">
+                            <form id="formNewRoll">
+                                <input type="number" name="meters" id="meters" placeholder="digite los metros" step="any" required>
+                                <input type="number" name="kilos" id="kilos" placeholder="digite los kilos" step="any" required>
+
+                                <br>
+                                <button type="submit">Enviar</button>
+                            </form>
+                        </div>
+                    </div>
+
+                    
+                </div>
+                <a class="close-reveal-modal xlarge" aria-label="Close">&#215;</a>
+            </div>
+        </div>
+        <div class="reveal-modal xlarge" data-reveal aria-labelledby="modalTitle" aria-hidden="true" role="dialog" id="modalInsertError">
+            <div class="dialog center">
+                <div class="dialog-head">
+                    <h1>Fallas de mantenimiento</h1>
+                </div>
+                <div class="dialog-body">
+                    <div class="row">
+                        <div class="small-12">
+                            <div >
+                                <table class="table-single">
+                                    <thead>
+                                        <tr>
+                                            <th>ID</th>
+                                            <th>FALLA</th>
+                                            <th>CREADA</th>
+                                            <th>TERMINAR</th>
+                                        <tr>
+                                    </thead>
+                                    <tbody id="tbodyTableErrors">
+
+                                    </tbody>
+
+                                </table>
+                            </div>
+                            <h2>Reportar una nueva falla</h2>
+                            <form id="formNewError">
+                                <select name="idTypeError" placeholder="Seleccione el tipo de parada">
+
+                                </select><br>
+                                <label>La falla mecanica ha parado la maquina?</label><br>
+                                <input type="radio" name="stop" value="0" checked><label >NO</label>
+                                <input type="radio" name="stop" value="1" ><label >SI</label><br>
+                                <textarea name="info" placeholder="(opcional) detalle aqui el problema..."></textarea>
+                                <br>
+                                <button type="submit">Enviar</button>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+                <a class="close-reveal-modal xlarge" aria-label="Close">&#215;</a>
+            </div>
+        </div>
+        <div class="reveal-modal xlarge" data-reveal aria-labelledby="modalTitle" aria-hidden="true" role="dialog" id="modalInsertFormat">
+            <div class="dialog center">
+                <div class="dialog-head">
+                    <h1>Arranque proceso</h1>
+                </div>
+                <div class="dialog-body">
+                    <div class="row">
+                        <div class="small-12">
+                            <form id="formProcessStartPrint">
+                                <ul class="small-block-grid-2"></ul>    
+                                <textarea name="observations" placeholder="Observaciones Generales"></textarea>                          
+                                <button type="button success">Enviar</button>
+                            </form>
+                        </div>
+                    </div>
+
+                    
+                </div>
+                <a class="close-reveal-modal xlarge" aria-label="Close">&#215;</a>
+            </div>
+        </div>
+        <div class="reveal-modal xlarge" data-reveal aria-labelledby="modalTitle" aria-hidden="true" role="dialog" id="modalInfoRoll">
+            <div class="dialog center">
+                <div class="dialog-head">
+                    <h1>Informacion de rollos</h1>
+                </div>
+                <div class="dialog-body">
+                    <div class="row">
+                        <div class="small-12">
+                            <table class="table-single">
+                                <thead>
+                                    <tr>
+                                        <th>#</th>
+                                        <th>METROS</th>
+                                        <th>KILOS</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="tableInfoRoll">
+
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+                <a class="close-reveal-modal xlarge" aria-label="Close">&#215;</a>
+            </div>
+        </div>
+        <div class="reveal-modal xlarge" data-reveal aria-labelledby="modalTitle" aria-hidden="true" role="dialog" id="modalWaste">
+            <div class="dialog center">
+                <div class="dialog-head">
+                    <h1>Desperdicio</h1>
+                </div>
+                <div class="dialog-body">
+                    <div class="row">
+                        <div class="small-12">
+                            <form id="formInsertWaste">
+                                <div class="row">
+                                    <div class="small-4 columns">
+                                        <select id="typeWaste" style="height:3rem">
+                                            
+                                        </select>
+                                    </div>
+                                    <div class="small-4 columns">
+                                        <input id="kilosWaste" type="number" style="height:3rem" placeholder="Digite la cantidad en kilosgramos(Kg)"/>
+                                    </div>
+                                    <div class="small-4 columns">
+                                        <button id="btnAddWaste" type="button"><i class="fa fa-plus"></i> Desperdicio</button>
+                                    </div>
+                                </div>
+                            </form>
+                            <div class="row">
+                                <div class="small-12 columns">
+                                    <table class="table-single">
+                                        <caption>Desperdicios</caption>
+                                        <thead>
+                                            <tr>
+                                                <th>CAUSA DESPERDICIO</th>
+                                                <th>CANTIDAD (Kg)</th>
+                                                <th>Eliminar</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody id="tableDataWaste">
+
+                                        </tbody>
+                                    </table>
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="small-12 columns">
+                                    <button id="btnEndOrder"class="success">Terminar</button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <a class="close-reveal-modal xlarge" aria-label="Close">&#215;</a>
+            </div>
+        </div>
+    <script src="js/foundation.min.js"></script>
+    <script>
+        $(document).on('ready',function(){
+            if (window.localStorage.getItem("state_order") == "false"){
+                window.location.href="dashboard.html";
+            }
+        });
+        $(document).foundation();
+    </script>
+    </body>
+</html>
